@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ $# -lt 2 ]; then
-	echo "Usage: $0 <essid> <password> <interface(usb0)>"
+	echo "Usage: $0 <essid> <password> <interface(wlan0)>"
 	exit 1
 fi
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
@@ -15,10 +15,12 @@ if [ ${#PASSWD} -lt 8 ]; then
 fi
 
 if [ "$IFACE" == "" ]; then
-	IFACE="usb0"
+	IFACE="wlan0"
 fi
 
 echo "Setting $ESSID with password \"$2\"..."
 wpa_passphrase $ESSID $PASSWD >> /etc/wpa_supplicant/wpa_supplicant.conf
 echo "Applying changes to $IFACE..."
-dhcpcd "$IFACE"
+ifconfig $IFACE down
+ifconfig $IFACE up
+dhcpcd $IFACE

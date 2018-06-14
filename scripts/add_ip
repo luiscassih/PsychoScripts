@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ $# -lt 3 ]; then
-	echo "Usage: $0 <address>/<prefixlen> <interface> <gateway>"
+if [ $# -lt 2 ]; then
+	echo "Usage: $0 <address>/<prefixlen> <interface> [gateway]"
 	exit 1
 fi
 [ "$UID" -eq 0 ] || exec sudo bash "$0" "$@"
@@ -9,5 +9,9 @@ ADDRESS=$1
 INTERFACE=$2
 GATEWAY=$3
 
-echo -e "\ninterface $INTERFACE\nstatic ip_address=$ADDRESS\nstatic routers=$GATEWAY" >> /etc/dhcpcd.conf
+echo -e "\ninterface $INTERFACE\nstatic ip_address=$ADDRESS\n" >> /etc/dhcpcd.conf
+if [ "$GATEWAY" != "" ]; then
+	echo -e "static routers=$GATEWAY" >> /etc/dhcpcd.conf
+fi
 echo "Applying changes to $INTERFACE"
+dhcpcd $INTERFACE
