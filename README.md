@@ -1,5 +1,5 @@
-# PsychoRabbitZero
-Useful configurations for a Raspberry Pi Zero portable server.
+# PsychoScripts
+Useful linux scripts, usually for server management. Raspberry Pi servers and such. 
 
 Scripts
 ----------
