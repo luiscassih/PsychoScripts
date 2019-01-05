@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Git wrapper
+# @Author: Luis C
+# Allow you to wrap the git command to use a specific private key for ssh connections
+# without the need to add and register your ssh key in others computers
+# Usage: source /this/wrapper [set/clean] </path/to/privkey(set)>
+
+# Example of usage:
+#   source wrapper set /home/l/dev/myprivatesshkey          # Set my key
+#   git pull                                                # Use your git commands as always    
+#   source wrapper clean                                    # Clean the wrapper after used
+
+showUsage() {
+    echo "Usage: source $0 [set/clean] <privkey(set)>"
+}
+
+if [ $# -lt 1 ]; then
+	showUsage
+else
+    case "$1" in
+        "set")
+            if [ $# -lt 2 ] || [ $2 = "" ] ; then
+                showUsage
+            else
+                printf "#!/bin/bash\nssh -i $2 \$@" > /tmp/gitwrapper
+                alias git="GIT_SSH=/tmp/gitwrapper git \$@"
+            fi
+            ;;
+        "clean")
+            unalias git
+            if [ -f /tmp/gitwrapper ]; then rm /tmp/gitwrapper; fi
+            echo "Git wrapper cleaned"
+            ;;
+        *)
+            showUsage
+            ;;
+    esac
+fi
