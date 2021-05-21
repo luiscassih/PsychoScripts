@@ -24,6 +24,7 @@ else
                 showUsage
             else
                 printf "#!/bin/bash\nssh -i $2 \$@" > /tmp/gitwrapper
+		chmod 777 /tmp/gitwrapper
                 alias git="GIT_SSH=/tmp/gitwrapper git \$@"
             fi
             ;;
